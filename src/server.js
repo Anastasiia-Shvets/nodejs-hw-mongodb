@@ -1,17 +1,9 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { initMongoConnection } from './mongodb/initMongoConnection.js';
 import { getAllContacts, getOneContact } from './services/contacts.js';
 
-dotenv.config();
-
-const PORT = process.env.PORT || 3000;
-
-
 export const setupServer = () => {
-    initMongoConnection();
     const app = express();
 
     app.use(express.json());
@@ -32,7 +24,7 @@ export const setupServer = () => {
         }
     });
 
-    app.get('/contacts/: contactId', async (req, res) => {
+    app.get('/contacts/:contactId', async (req, res) => {
         try {
             const { contactId } = req.params;
             const contact = await getOneContact(contactId);
@@ -42,11 +34,16 @@ export const setupServer = () => {
         }
     });
 
+    // app.get('contacts', getAllContacts);
+    // app.get('/contacts/:contactId', getOneContact);
+
     app.use((req, res, next) => {
         res.status(404).json({
-            message: 'Not found'
+            message: 'Not found',
         });
     });
+
+    const PORT = process.env.PORT || 3000;
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);

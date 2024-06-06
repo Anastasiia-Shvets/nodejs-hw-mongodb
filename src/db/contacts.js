@@ -3,25 +3,18 @@ import { Schema, model } from 'mongoose';
 const contactsSchema = new Schema({
     name: {
         type: String,
-        required: true,
+        required: true
     },
     phoneNumber: {
         type: String,
-        required: true,
+        required: true
     },
     email: {
-        type: String,
-        validate: {
-            validator: function (v) {
-                return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
-            },
-            message: props => `${props.value} is not a valid email!`
-        },
-        required: false,
+        type: String
     },
     isFavourite: {
         type: Boolean,
-        default: false,
+        default: false
     },
     contactType: {
         type: String,
