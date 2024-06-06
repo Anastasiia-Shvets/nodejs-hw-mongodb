@@ -2,6 +2,7 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import { getAllContacts, getOneContact } from './services/contacts.js';
+import mongoose from 'mongoose';
 
 export const setupServer = () => {
     const app = express();
@@ -20,24 +21,26 @@ export const setupServer = () => {
             const contacts = await getAllContacts();
             res.status(200).json({ data: contacts });
         } catch (error) {
-            res.status(500).json({ message: 'Internal server error' });
+            res.status(500).json({ message: 'Internal server error', error });
         }
     });
 
     app.get('/contacts/:contactId', async (req, res) => {
         try {
             const { contactId } = req.params;
+            if (!mongoose.Types.ObjectId.isValid(contactId)) {
+                return res.status(400).json({
+                    data: 'ID is not valid.',
+                });
+            }
             const contact = await getOneContact(contactId);
             res.status(200).json({ data: contact });
         } catch (error) {
-            res.status(500).json({ message: 'Internal server error' });
+            res.status(500).json({ message: 'Internal server error', error });
         }
     });
 
-    // app.get('contacts', getAllContacts);
-    // app.get('/contacts/:contactId', getOneContact);
-
-    app.use((req, res, next) => {
+    app.use((req, res) => {
         res.status(404).json({
             message: 'Not found',
         });
@@ -48,5 +51,4 @@ export const setupServer = () => {
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
-
 };
