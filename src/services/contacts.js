@@ -1,4 +1,4 @@
-import { ContactsCollection } from '../model/contacts.js';
+import { ContactsCollection } from "../model/contacts.js";
 
 
 export const getAllContacts = async () => {
@@ -10,11 +10,9 @@ export const getAllContacts = async () => {
     }
 };
 
-export const getOneContact = async (contactId) => {
-    try {
-        const contact = await ContactsCollection.findById(contactId);
-        return contact;
-    } catch (error) {
-        throw new Error('Not found.', error);
-    }
+export const createContact = async (payload) => {
+    const contact = await ContactsCollection.create(payload);
+    return contact;
 };
+
+
