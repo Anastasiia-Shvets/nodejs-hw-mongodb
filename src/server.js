@@ -22,9 +22,9 @@ export const setupServer = () => {
         });
     });
 
-    app.use('/contacts', getContactsController);
-    app.use('/:contactId', getContactByIdController);
-    app.use('*', (req, res) => {
+    app.get('/contacts', getContactsController);
+    app.get('/contacts/:contactId', getContactByIdController);
+    app.get('*', (req, res) => {
         res.status(404).json({
             message: 'Not found',
         });
