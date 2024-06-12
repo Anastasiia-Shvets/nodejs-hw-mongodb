@@ -1,8 +1,9 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import { getAllContacts, getOneContact } from './services/contacts.js';
-import mongoose from 'mongoose';
+import contactsRouter from './routers/contacts.js';
+import { errorHandler} from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 export const setupServer = () => {
     const app = express();
@@ -16,37 +17,18 @@ export const setupServer = () => {
     }),
     );
 
-    app.get('/contacts', async (req, res) => {
-        try {
-            const contacts = await getAllContacts();
-            res.status(200).json({ data: contacts });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal server error', error });
-        }
-    });
-
-    app.get('/contacts/:contactId', async (req, res) => {
-        try {
-            const { contactId } = req.params;
-            if (!mongoose.Types.ObjectId.isValid(contactId)) {
-                return res.status(400).json({
-                    data: 'ID is not valid.',
-                });
-            }
-            const contact = await getOneContact(contactId);
-            res.status(200).json({ data: contact });
-        } catch (error) {
-            res.status(500).json({ message: 'Internal server error', error });
-        }
-    });
-
-    app.use((req, res) => {
-        res.status(404).json({
-            message: 'Not found',
+    app.get('/', (req, res) => {
+        res.json({
+            message: 'Hello!',
         });
     });
 
+    app.use('/contacts',contactsRouter);
+    app.use('*', notFoundHandler);
+    app.use(errorHandler);
+
     const PORT = process.env.PORT || 3000;
+
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
