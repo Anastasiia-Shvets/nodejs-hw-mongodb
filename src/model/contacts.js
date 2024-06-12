@@ -10,7 +10,14 @@ const contactsSchema = new mongoose.Schema({
         required: true
     },
     email: {
-        type: String
+        type: String,
+        validate: {
+            validator: function (v) {
+                return /.+\@.+\..+/.test(v);
+            },
+            message: props => `${props.value} is not a valid email!`
+        },
+        required: false,
     },
     isFavourite: {
         type: Boolean,
@@ -23,8 +30,10 @@ const contactsSchema = new mongoose.Schema({
         default: 'personal',
     },
 },
-    { timestamps: true }
-);
+    {
+        timestamps: true,
+        versionKey: false
+    });
 
 export const ContactsCollection = mongoose.model('contacts', contactsSchema);
 
