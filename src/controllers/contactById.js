@@ -11,14 +11,14 @@ export const getContactByIdController = async (req, res, next) => {
             });
         }
         res.status(200).json({
-            status: 'success',
+            status: 200,
             message: `Successfully found contact with id ${contactId}!`,
             data: contact,
         });
 
     } catch (error) {
         res.status(500).json({
-            status: 'error',
+            status: 500,
             message: error.message,
         });
     }
