@@ -4,9 +4,11 @@ import { deleteContactController, getContactByIdController, patchContactControll
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import { createContactSchema, updateContactSchema } from "../validation/contacts.js";
 import { validateBody } from '../utils/validateBody.js';
+import { isValidId } from "../utils/isValidId.js";
 
 const router = Router();
 
+router.use('/contacts/:contactId', isValidId);
 router.get('/contacts', ctrlWrapper(getContactsController));
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
 router.post('/contacts', validateBody(createContactSchema), ctrlWrapper(createContactController));
