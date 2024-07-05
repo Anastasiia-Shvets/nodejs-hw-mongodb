@@ -1,15 +1,17 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import contactRouter from './routers/contacts.js';
+import cookieParser from 'cookie-parser';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import rootRouter from './routers/index.js';
 
 export const setupServer = () => {
     const app = express();
 
     app.use(express.json());
     app.use(cors());
+    app.use(cookieParser());
     app.use(pino({
         transport: {
             target: 'pino-pretty',
@@ -22,7 +24,7 @@ export const setupServer = () => {
             message: 'Hello!',
         });
     });
-    app.use(contactRouter);
+    app.use(rootRouter);
     app.use('*', notFoundHandler);
     app.use(errorHandler);
 
