@@ -1,16 +1,22 @@
 import { createContact, getAllContacts } from "../services/contacts.js";
+import { parseFilterParams } from "../utils/parseFilterParams.js";
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
 
 export const getContactsController = async (req, res) => {
     try {
+        const userId = req.user._id;
         const { page, perPage } = parsePaginationParams(req.query);
         const { sortBy, sortOrder } = parseSortParams(req.query);
+        const filter = parseFilterParams(req.query);
         const contacts = await getAllContacts({
+
             page,
             perPage,
             sortBy,
             sortOrder,
+            filter,
+            userId,
         });
 
         res.status(200).json({
@@ -27,7 +33,8 @@ export const getContactsController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
-    const contact = await createContact(req.body);
+    const userId = req.user._id;
+    const contact = await createContact(req.body, userId);
     res.status(201).json({
         status: 201,
         message: 'Successfully creates a contact!',

@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import rootRouter from './routers/index.js';
+import router from './routers/index.js';
 
 export const setupServer = () => {
     const app = express();
@@ -24,7 +24,7 @@ export const setupServer = () => {
             message: 'Hello!',
         });
     });
-    app.use(rootRouter);
+    app.use(router);
     app.use('*', notFoundHandler);
     app.use(errorHandler);
 
