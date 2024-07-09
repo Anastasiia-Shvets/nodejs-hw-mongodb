@@ -37,15 +37,9 @@ export const loginUser = async (payload) => {
   }
 
   await Sessions.deleteOne({ userId: user._id });
-
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
   return await Sessions.create({
     userId: user._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
+    ...createSession(),
   });
 };
 
@@ -75,11 +69,14 @@ export const refreshSession = async ({ sessionId, sessionToken }) => {
     throw createHttpError(401, 'Session not found.');
   }
 
-  await Sessions.deleteOne({ _id: sessionId, sessionToken });
+  const newSession = createSession();
+
+
+  await Sessions.deleteOne({ _id: sessionId });
 
   return await Sessions.create({
     userId: user._id,
-    ...createSession(),
+    ...newSession,
   });
 };
 
