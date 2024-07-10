@@ -10,7 +10,6 @@ import { checkToken } from "../middlewares/checkToken.js";
 
 
 const router = Router();
-
 router.use(checkToken);
 router.use('/:contactId', isValidId);
 router.use('', authenticate);

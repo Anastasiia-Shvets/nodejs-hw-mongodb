@@ -12,12 +12,6 @@ const contactsSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      validate: {
-        validator: function (v) {
-          return /.+\@.+\..+/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid email!`,
-      },
       required: false,
     },
     isFavourite: {
@@ -27,12 +21,12 @@ const contactsSchema = new mongoose.Schema(
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
-      rerquired: true,
+      rerquired: false,
       default: 'personal',
     },
     userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'users',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
   },

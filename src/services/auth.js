@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import crypto, { randomBytes } from 'crypto';
+import crypto from 'crypto';
 import { User } from '../model/users.js';
 import createHttpError from 'http-errors';
 import { Sessions } from '../model/session.js';
