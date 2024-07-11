@@ -1,5 +1,4 @@
 import createHttpError from 'http-errors';
-import jwt from 'jsonwebtoken';
 import { Sessions } from '../model/session.js';
 import { User } from '../model/users.js';
 
