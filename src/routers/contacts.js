@@ -13,7 +13,7 @@ import {
   createContactSchema,
   updateContactSchema,
 } from '../validation/contacts.js';
-import { validateBody } from '../utils/validateBody.js';
+import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../utils/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
 
