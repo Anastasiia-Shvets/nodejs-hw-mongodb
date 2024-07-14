@@ -2,7 +2,7 @@ import { ContactsCollection } from '../model/contacts.js';
 
 export const getOneContact = async (contactId, userId) => {
   try {
-    const contact = await ContactsCollection.findById({
+    const contact = await ContactsCollection.findOne({
       _id: contactId,
       userId,
     });
