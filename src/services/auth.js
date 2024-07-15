@@ -122,7 +122,7 @@ export const requestResetToken = async (email) => {
     await sendEmail({
       from: checkEnvFor(SMTP.SMTP_FROM),
       to: email,
-      sub: 'Reset your password',
+      subject: 'Reset your password',
       html,
     });
   } catch (err) {
