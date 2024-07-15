@@ -4,7 +4,12 @@ import jwt from 'jsonwebtoken';
 import { User } from '../model/users.js';
 import createHttpError from 'http-errors';
 import { Sessions } from '../model/session.js';
-import { FIFTEEN_MINUTES, SMTP, TEMPLATES_DIR, THIRTY_DAYS } from '../contacts/index.js';
+import {
+  FIFTEEN_MINUTES,
+  SMTP,
+  TEMPLATES_DIR,
+  THIRTY_DAYS,
+} from '../contacts/index.js';
 
 import path from 'path';
 import handlebars from 'handlebars';
@@ -87,20 +92,13 @@ export const refreshSession = async ({ sessionId, sessionToken }) => {
 
 export const requestResetToken = async (email) => {
   const user = await User.findOne({ email });
+  if (!user) throw createHttpError(404, 'User not found!');
 
-  if (!user) {
-    throw createHttpError(404, 'User not found.');
-  }
-  const resetToken = jwt.sign({
-    sub: user._id,
-    email,
-  },
+  const resetToken = jwt.sign(
+    { sub: user._id, email },
     checkEnvFor('JWT_SECRET'),
     { expiresIn: '5m' },
   );
-
-  // console.log('\n', 'Reset Token: ', resetToken, '\n');
-  // return;
 
   const resetPasswordTemplatePath = path.join(
     TEMPLATES_DIR,
@@ -124,7 +122,7 @@ export const requestResetToken = async (email) => {
     await sendEmail({
       from: checkEnvFor(SMTP.SMTP_FROM),
       to: email,
-      subject: 'Reset your password',
+      sub: 'Reset your password',
       html,
     });
   } catch (err) {
@@ -153,14 +151,13 @@ export const resetPassword = async (payload) => {
     _id: entries.sub,
   });
 
-  if (!user) { throw createHttpError(404, 'User not found!'); };
+  if (!user) {
+    throw createHttpError(404, 'User not found!');
+  }
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
-  await User.updateOne(
-    { _id: user._id },
-    { password: encryptedPassword },
-  );
+  await User.updateOne({ _id: user._id }, { password: encryptedPassword });
 
   await Sessions.deleteOne({ _id: user._id });
 };
