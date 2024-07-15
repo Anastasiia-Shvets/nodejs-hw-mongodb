@@ -5,8 +5,8 @@ export const SORT_ORDER = {
     DESC: 'desc',
 };
 
-export const FIFTEEN_MINUTES = 15 * 60 * 1000;
-export const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+export const FIFTEEN_MINUTES = 1000 * 60 * 15;
+export const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 
 export const SMTP = {
     SMTP_HOST: 'SMTP_HOST',
@@ -26,5 +26,4 @@ export const CLOUDINARY = {
     API_KEY: 'API_KEY',
     API_SECRET: 'API_SECRET',
 };
-
 

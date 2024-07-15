@@ -3,12 +3,13 @@ import { ContactsCollection } from "../model/contacts.js";
 import { calculatePaginationData } from "../utils/calculatePaginationData.js";
 
 
-export const getAllContacts = async ({
+export const getAllContacts = async (
+    userId,
+    {
     page = 1,
     perPage = 10,
     sortOrder = SORT_ORDER.ASC,
     sortBy = '_id',
-    userId,
     filter = {},
 }) => {
     try {

@@ -3,6 +3,8 @@ import checkEnvFor from "../utils/env.js";
 import { parseFilterParams } from "../utils/parseFilterParams.js";
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
+import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
+import { saveFileToUploadDir } from "../utils/saveFileToUploadDir.js"
 
 export const getContactsController = async (req, res) => {
     try {
@@ -44,12 +46,15 @@ export const createContactController = async (req, res) => {
         }
     }
 
-    const newContact = await createContact({ ...req.body, userId: req.user._id });
+    const newContact = await createContact({
+        ...req.body,
+        photo: photoUrl,
+        userId: req.user._id,
+    });
+
     res.status(201).json({
-        status: 201,
-        message: 'Successfully creates a contact!',
+        status: res.statusCode,
+        message: 'Successfully created a contact!',
         data: newContact,
     });
 };
-
-
