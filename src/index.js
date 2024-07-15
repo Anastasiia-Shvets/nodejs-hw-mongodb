@@ -1,15 +1,15 @@
 import { initMongoConnection } from './db/initMongoConnection.js';
 import { setupServer } from './server.js';
 import 'dotenv/config';
+import { createDirIfNotExists } from './utils/createDirIfNotExists.js';
+import { TEMP_UPLOAD_DIR, UPLOAD_DIR } from './contacts/index.js';
 
 const startServer = async () => {
-    try {
-        console.log('successful startServer');
+
         await initMongoConnection();
         setupServer();
-    } catch (error) {
-        console.error('Failed to start the server:', error);
-    }
+    await createDirIfNotExists(TEMP_UPLOAD_DIR);
+    await createDirIfNotExists(UPLOAD_DIR);
 };
-
 startServer();
+

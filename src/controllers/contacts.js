@@ -1,4 +1,5 @@
 import { createContact, getAllContacts } from "../services/contacts.js";
+import checkEnvFor from "../utils/env.js";
 import { parseFilterParams } from "../utils/parseFilterParams.js";
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
@@ -32,6 +33,17 @@ export const getContactsController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
+    const photo = req.file;
+    let photoUrl;
+
+    if (photo) {
+        if (checkEnvFor('ENABLE_CLOUDINARY') === 'true') {
+            photoUrl = await saveFileToCloudinary(photo);
+        } else {
+            photoUrl = await saveFileToUploadDir(photo);
+        }
+    }
+
     const newContact = await createContact({ ...req.body, userId: req.user._id });
     res.status(201).json({
         status: 201,

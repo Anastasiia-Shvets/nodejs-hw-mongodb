@@ -4,6 +4,9 @@ import {
   updateContact,
 } from '../services/contactById.js';
 import createHttpError from 'http-errors';
+import checkEnvFor from '../utils/env.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
@@ -34,7 +37,17 @@ export const deleteContactController = async (req, res, next) => {
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const userId = req.user._id;
-  const result = await updateContact(contactId, req.body, userId);
+  const photo = req.file;
+  let photoUrl;
+
+  if (photo) {
+    if (checkEnvFor('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+  const result = await updateContact(contactId, { ...req.body, photo: photoUrl, userId });
   if (!result) {
     next(createHttpError(404, 'Contact not found.'));
     return;
