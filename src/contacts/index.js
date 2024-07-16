@@ -31,3 +31,5 @@ export const GOOGLE = {
   CLIENT_ID: 'CLIENT_ID',
   CLIENT_SECRET: 'CLIENT_SECRET',
 };
+
+export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');
