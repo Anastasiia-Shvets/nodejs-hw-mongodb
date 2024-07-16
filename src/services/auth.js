@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
+import crypto, { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { User } from '../model/users.js';
 import createHttpError from 'http-errors';
@@ -16,6 +16,7 @@ import handlebars from 'handlebars';
 import fs from 'node:fs/promises';
 import { sendEmail } from '../utils/sendEmail.js';
 import checkEnvFor from '../utils/env.js';
+import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
 
 const createSession = () => {
   return {
@@ -160,4 +161,30 @@ export const resetPassword = async (payload) => {
   await User.updateOne({ _id: user._id }, { password: encryptedPassword });
 
   await Sessions.deleteOne({ _id: user._id });
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload)
+    throw createHttpError(401);
+  let user = await User.findOne({
+    email: payload.email
+  });
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+    user = await User.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  await Sessions.deleteOne({ userId: user._id });
+
+  const newSession = createSession();
+  return await Sessions.create({
+    userId: user._id,
+    ...newSession,
+  });
 };
