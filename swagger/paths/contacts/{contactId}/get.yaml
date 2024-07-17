@@ -11,7 +11,7 @@ parameters:
     required: true
     schema:
       type: string
-      example: '65ca67e7ae7f10c88b598384'
+      example: '6697a877b253200f602b9e50'
 responses:
   '200':
     description: 'Get contact by id'
@@ -29,10 +29,10 @@ responses:
               example: 200
             message:
               type: string
-              example: 'Successfully found contact with id 65ca67e7ae7f10c88b598384!'
+              example: 'Successfully found contact with id 66631d41e0d917b421e31e3b!'
             data:
               type: object
-              $ref: '../../../components/schemas/contacts.yaml'
+              $ref: '../../../components/schemas/contact.yaml'
   '401':
     $ref: '../../../components/responses/401.yaml'
   '404':
